@@ -1,6 +1,7 @@
 version: '3.4'
 services:
   kerberos1:
+    restart: always
     image: "kerberos/kerberos"
     ports:
      - ${KER1}
@@ -9,6 +10,7 @@ services:
      - ${MEDIA_FOLDER}/kerberos1/capture:/etc/opt/kerberosio/capture
      - ${USERDIR}/docker/shared:/shared
   kerberos2:
+    restart: always
     image: "kerberos/kerberos"
     ports:
      - ${KER2}
