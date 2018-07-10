@@ -1,0 +1,74 @@
+version: '3.4'
+services:
+  kerberos1:
+    image: "kerberos/kerberos"
+    ports:
+     - ${KER1}
+     - "8889:8889"
+    volumes:
+     - ${MEDIA_FOLDER}/kerberos1/capture:/etc/opt/kerberosio/capture
+     - ${USERDIR}/docker/shared:/shared
+  kerberos2:
+    image: "kerberos/kerberos"
+    ports:
+     - ${KER2}
+     - "8890:8890"
+    volumes:
+     - ${MEDIA_FOLDER}/kerberos2/capture:/etc/opt/kerberosio/capture
+     - ${USERDIR}/docker/shared:/shared
+  portainer:
+    image: portainer/portainer
+    container_name: portainer
+    restart: always
+    command: --templates http://templates/templates.json
+    ports:
+      - ${PORTA}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${USERDIR}/docker/portainer/data:/data
+      - ${USERDIR}/docker/shared:/shared
+    environment:
+      - TZ=${TZ}
+  plexms:
+    container_name: plexms
+    restart: always
+    image: lsioarmhf/plex
+    network_mode: "host"
+    volumes:
+      - ${USERDIR}/docker/plexms:/config
+      - ${USERDIR}/Downloads/plex_tmp:/transcode
+      - ${MEDIA_FOLDER}/plex_server:/media
+      - ${USERDIR}/docker/shared:/shared
+    ports:
+      - "32400:32400/tcp"
+      - "3005:3005/tcp"
+      - "8324:8324/tcp"
+      - "32469:32469/tcp"
+      - "1900:1900/udp"
+      - "32410:32410/udp"
+      - "32412:32412/udp"
+      - "32413:32413/udp"
+      - "32414:32414/udp"
+    environment:
+      - TZ=${TZ}
+      - HOSTNAME="Docker Plex"
+      - PLEX_CLAIM="claim-${CLAIM}"
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - ADVERTISE_IP=${ADVERIP}
+  homeassistant:
+    container_name: homeassistant
+    restart: always
+    image: homeassistant/armhf-homeassistant
+    volumes:
+      - ${USERDIR}/docker/homeassistant:/config
+      - /etc/localtime:/etc/localtime:ro
+      - ${USERDIR}/docker/shared:/shared
+    ports:
+      - ${HMAS}
+    privileged: true
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    
