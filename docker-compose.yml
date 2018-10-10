@@ -1,7 +1,6 @@
 version: '3.4'
 services:
   kerberos1:
-    restart: always
     image: "kerberos/kerberos"
     ports:
      - ${KER1}
@@ -9,8 +8,8 @@ services:
     volumes:
      - ${MEDIA_FOLDER}/kerberos1/capture:/etc/opt/kerberosio/capture
      - ${USERDIR}/docker/shared:/shared
+     - ${USERDIR}/docker/kerberos1/config:/etc/opt/kerberosio/config
   kerberos2:
-    restart: always
     image: "kerberos/kerberos"
     ports:
      - ${KER2}
@@ -18,11 +17,11 @@ services:
     volumes:
      - ${MEDIA_FOLDER}/kerberos2/capture:/etc/opt/kerberosio/capture
      - ${USERDIR}/docker/shared:/shared
+     - ${USERDIR}/docker/kerberos2/config:/etc/opt/kerberosio/config
   portainer:
     image: portainer/portainer
     container_name: portainer
     restart: always
-    command: --templates http://templates/templates.json
     ports:
       - ${PORTA}
     volumes:
@@ -33,7 +32,6 @@ services:
       - TZ=${TZ}
   plexms:
     container_name: plexms
-    restart: always
     image: lsioarmhf/plex
     network_mode: "host"
     volumes:
@@ -43,8 +41,6 @@ services:
       - ${USERDIR}/docker/shared:/shared
     ports:
       - "32400:32400/tcp"
-      - "3005:3005/tcp"
-      - "8324:8324/tcp"
       - "32469:32469/tcp"
       - "1900:1900/udp"
       - "32410:32410/udp"
@@ -73,4 +69,15 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-    
+  organizr:
+    container_name: organizr
+    image: lsioarmhf/organizr
+    volumes:
+      - ${USERDIR}/docker/organizr:/config
+      - ${USERDIR}/docker/shared:/shared
+    ports:
+      - "12006:80"
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
