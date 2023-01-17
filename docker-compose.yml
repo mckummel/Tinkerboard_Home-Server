@@ -30,30 +30,6 @@ services:
       - ${USERDIR}/docker/shared:/shared
     environment:
       - TZ=${TZ}
-  plexms:
-    container_name: plexms
-    image: lsioarmhf/plex
-    network_mode: "host"
-    volumes:
-      - ${USERDIR}/docker/plexms:/config
-      - ${USERDIR}/Downloads/plex_tmp:/transcode
-      - ${MEDIA_FOLDER}/plex_server:/media
-      - ${USERDIR}/docker/shared:/shared
-    ports:
-      - "32400:32400/tcp"
-      - "32469:32469/tcp"
-      - "1900:1900/udp"
-      - "32410:32410/udp"
-      - "32412:32412/udp"
-      - "32413:32413/udp"
-      - "32414:32414/udp"
-    environment:
-      - TZ=${TZ}
-      - HOSTNAME="Docker Plex"
-      - PLEX_CLAIM="claim-${CLAIM}"
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - ADVERTISE_IP=${ADVERIP}
   homeassistant:
     container_name: homeassistant
     restart: always
@@ -65,18 +41,6 @@ services:
     ports:
       - ${HMAS}
     privileged: true
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-  organizr:
-    container_name: organizr
-    image: lsioarmhf/organizr
-    volumes:
-      - ${USERDIR}/docker/organizr:/config
-      - ${USERDIR}/docker/shared:/shared
-    ports:
-      - "12006:80"
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
